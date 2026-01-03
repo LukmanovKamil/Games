@@ -1,16 +1,33 @@
 // ===== Процент внутри одной карточки =====
 function updateCardPercent(card) {
     const percentDisplay = card.querySelectorAll('.card-title')[1];
-    const checkboxes = card.querySelectorAll('.checkbox');
 
-    const total = checkboxes.length;
-    const checked = [...checkboxes].filter(cb =>
+    let total = 0;
+    let checked = 0;
+
+    // ===== обычные чекбоксы (не внутри .one)
+    const normalCheckboxes = card.querySelectorAll(
+        '.checkbox:not(.one .checkbox)'
+    );
+
+    total += normalCheckboxes.length;
+    checked += [...normalCheckboxes].filter(cb =>
         cb.classList.contains('checked')
     ).length;
+
+    // ===== группы .one (считаются как 1)
+    card.querySelectorAll('.one').forEach(one => {
+        total += 1;
+
+        if (one.querySelector('.checkbox.checked')) {
+            checked += 1;
+        }
+    });
 
     const percent = total === 0 ? 0 : ((checked / total) * 100).toFixed(2);
     percentDisplay.textContent = `${percent}%`;
 }
+
 
 // ===== Общий процент в header =====
 function updateGlobalPercent() {
